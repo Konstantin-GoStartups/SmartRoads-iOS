@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         LocalDataManager.shared.initializeQueuesAndRealm()
+        UserDefaultsData.frames = 1
         return true
     }
 

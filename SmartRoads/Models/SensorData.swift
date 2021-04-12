@@ -24,12 +24,14 @@ class SensorData: Object {
     @objc dynamic var maximumDistance: Float = 0.0
     @objc dynamic var defaultPixelData: String = ""
     @objc dynamic var normalisedPixelData: String = ""
+    @objc dynamic var clampedPixelData: String = ""
+    @objc dynamic var finalPixelData: String = ""
     
     override init() {
         
     }
     
-    convenience init(frame: Int, latitude: Double, longitude: Double, xAcceleration: Double, yAcceleration: Double, zAcceleration: Double, matrix: String, intrinsics: String, projectionMatrix: String, eulerAngle: String, minimumDistance: Float, maximumDistance: Float, defaultPixelData: String, normalisedPixelData: String) {
+    convenience init(frame: Int, latitude: Double, longitude: Double, xAcceleration: Double, yAcceleration: Double, zAcceleration: Double, matrix: String, intrinsics: String, projectionMatrix: String, eulerAngle: String, minimumDistance: Float, maximumDistance: Float, defaultPixelData: String, normalisedPixelData: String, clampedPixelData: String, finalPixelData: String) {
         self.init()
         self.frame = frame
         self.latitude = latitude
@@ -45,6 +47,8 @@ class SensorData: Object {
         self.maximumDistance = maximumDistance
         self.defaultPixelData = defaultPixelData.debugDescription
         self.normalisedPixelData = normalisedPixelData.debugDescription
+        self.clampedPixelData = clampedPixelData
+        self.finalPixelData = finalPixelData
     }
     
     override static func primaryKey() -> String? {

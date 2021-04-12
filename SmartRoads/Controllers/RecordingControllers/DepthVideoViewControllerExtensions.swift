@@ -29,7 +29,7 @@ extension DepthVideoViewController: ARSessionDelegate {
         let arrayOfPixels = depthMap.normalize()
        // print(asdasd)
         guard let colorImage: CVPixelBuffer = arView.session.currentFrame?.capturedImage else { return }
-        //depthMap.clamp()
+        let clampedPixels = depthMap.clamp()
         guard let confidenceMap = depthData.confidenceMap else {
             print("Failed to get confidenceMap.")
             return
@@ -38,14 +38,21 @@ extension DepthVideoViewController: ARSessionDelegate {
 
         let defaultDepthPixels = arrayOfPixels.first!.debugDescription
         let normalisedDepthPixels = arrayOfPixels.last!.debugDescription
-        self.previewView.image = UIImage(ciImage: CIImage(cvImageBuffer: depthMap))
+        let clampedDepthPixels = clampedPixels.debugDescription
+        self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))
         let intrinsics = session.currentFrame?.camera.intrinsics.debugDescription.replacingOccurrences(of: "simd_float3x3(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         let matrix = session.currentFrame?.camera.viewMatrix(for: .landscapeLeft).debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         let projectionMatrix = session.currentFrame?.camera.projectionMatrix.debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
-        let eulerAnglesMatrix = session.currentFrame?.camera.eulerAngles.debugDescription.replacingOccurrences(of: "SIMD3<Float>", with: "").replacingOccurrences(of: ")", with: "") ?? "error"        
+        let eulerAnglesMatrix = session.currentFrame?.camera.eulerAngles.debugDescription.replacingOccurrences(of: "SIMD3<Float>", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         if self.isRecording {
+            cycles += 1
+        }
+        if self.isRecording && (cycles%devider == 0){
+            let image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))
+            guard let okok = image.buffer() else { return }
             let timestamp: CMTime = CMTime(seconds: frame.timestamp, preferredTimescale: 1_000_000_000)
             guard let depthPixelBuffer = self.previewView.image?.buffer() else { return }
+            let finalPixels = depthPixelBuffer.finalPixels().debugDescription
             //            if let image =  UIImage(ciImage: CIImage(cvImageBuffer: colorImage)).rotate(radians: .pi/2) {
             //                if let rgbPixelBuffer = image.buffer() {
             //                    self.rgbRecorder.update(rgbPixelBuffer, timestamp: timestamp)
@@ -55,14 +62,14 @@ extension DepthVideoViewController: ARSessionDelegate {
             //            } else {
             self.rgbRecorder.update(colorImage, timestamp: timestamp)
             //     }
-            self.depthRecorder.update(depthPixelBuffer, timestamp: timestamp)
+            self.depthRecorder.update(okok, timestamp: timestamp)
             //self.confidenceRecorder.update(confidencePixelBuffer, timestamp: timestamp)
             let coordinates = self.getGpsLocation(locationManager: self.locationManager)
             guard let data = self.motionManager.accelerometerData else { return }
             let x = data.acceleration.x
             let y = data.acceleration.y
             let z = data.acceleration.z
-            self.localDataManager.addDataToObjects(frames: self.numFrames, coordinates: coordinates, xAcceleration: x, yAcceleration: y, zAcceleration: z, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAnglesMatrix, minimumDistance: arrayOfPixels.first?.min() ?? 0.0, maximumDistance: arrayOfPixels.first?.max() ?? 0.0, defaultPixelData: defaultDepthPixels, normalisedPicelData: normalisedDepthPixels)
+            self.localDataManager.addDataToObjects(frames: self.numFrames, coordinates: coordinates, xAcceleration: x, yAcceleration: y, zAcceleration: z, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAnglesMatrix, minimumDistance: arrayOfPixels.first?.min() ?? 0.0, maximumDistance: arrayOfPixels.first?.max() ?? 0.0, defaultPixelData: defaultDepthPixels, normalisedPicelData: normalisedDepthPixels, clampedPixelData: clampedDepthPixels, finalPixelData: finalPixels)
             self.numFrames += 1
         }
     }

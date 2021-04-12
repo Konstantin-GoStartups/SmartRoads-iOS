@@ -58,6 +58,7 @@
 		E5F59DA226120DA000C91F75 /* URLExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59DA126120DA000C91F75 /* URLExtensions.swift */; };
 		E5F59DA526120FDC00C91F75 /* IntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59DA426120FDC00C91F75 /* IntExtension.swift */; };
 		E5F59DA826121A9000C91F75 /* UIApllicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59DA726121A9000C91F75 /* UIApllicationExtensions.swift */; };
+		E5FC1E3C2624AFFA005FD71B /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FC1E3B2624AFFA005FD71B /* UserDefaultsData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -112,6 +113,7 @@
 		E5F59DA126120DA000C91F75 /* URLExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.swift; sourceTree = "<group>"; };
 		E5F59DA426120FDC00C91F75 /* IntExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtension.swift; sourceTree = "<group>"; };
 		E5F59DA726121A9000C91F75 /* UIApllicationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApllicationExtensions.swift; sourceTree = "<group>"; };
+		E5FC1E3B2624AFFA005FD71B /* UserDefaultsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -292,6 +294,7 @@
 			isa = PBXGroup;
 			children = (
 				E5F59D632611C7F300C91F75 /* LocalDataManager.swift */,
+				E5FC1E3B2624AFFA005FD71B /* UserDefaultsData.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -400,6 +403,7 @@
 				E5503C3026237A6A00AFEA98 /* UIViewExtensions.swift in Sources */,
 				E5D1B49626235E5B00D471EA /* DimensionalArray.swift in Sources */,
 				E56A2BE0261610FB00DF9F58 /* Helper.swift in Sources */,
+				E5FC1E3C2624AFFA005FD71B /* UserDefaultsData.swift in Sources */,
 				E595D75E2615E105003FC72D /* VideoCollectionViewController.swift in Sources */,
 				E595CADC260CCCF600BE5F6C /* RGBRecorder.swift in Sources */,
 				E595CAFE260CF02E00BE5F6C /* VideoTableViewCell.swift in Sources */,

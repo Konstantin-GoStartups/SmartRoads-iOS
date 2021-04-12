@@ -65,7 +65,7 @@ class DepthVideoViewController: UIViewController {
     var username: String?
     var sceneDescription: String?
     var sceneType: String?
-    var numFrames: Int = 0
+    var numFrames: Int = 1
     var dirUrl: URL!
     var recordingId: String = ""
     var isRecording: Bool = false
@@ -78,6 +78,8 @@ class DepthVideoViewController: UIViewController {
     let localDataManager = LocalDataManager.shared
     var orientation = UIInterfaceOrientation.landscapeRight
     lazy var rotateToARCamera = makeRotateToARCameraMatrix(orientation: orientation)
+    var devider = 0
+    var cycles = 0
     
     
     override func viewDidLoad() {
@@ -125,6 +127,7 @@ class DepthVideoViewController: UIViewController {
         configuration.frameSemantics = .sceneDepth
         //configuration.sceneReconstruction = .meshWithClassification
         //configuration.environmentTexturing = .automatic
+        configuration.wantsHDREnvironmentTextures = true
 
        // arSession.run(configuration)
        // arView.session = arSession
@@ -135,15 +138,28 @@ class DepthVideoViewController: UIViewController {
             let imageResolution = videoFormat.imageResolution
             colorFrameResolution = [Int(imageResolution.height), Int(imageResolution.width)]
             print(colorFrameResolution, frequency)
-            
             let rgbVideoSettings: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.jpeg, AVVideoHeightKey: NSNumber(value: colorFrameResolution[0]), AVVideoWidthKey: NSNumber(value: colorFrameResolution[1])]
-            let depthVideoSetting: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.jpeg, AVVideoHeightKey: 192, AVVideoWidthKey: 256]
+            let depthVideoSetting: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoHeightKey: 192, AVVideoWidthKey: 256,AVVideoColorPropertiesKey : [
+                AVVideoColorPrimariesKey : AVVideoColorPrimaries_ITU_R_709_2,
+                AVVideoTransferFunctionKey : AVVideoTransferFunction_ITU_R_709_2,
+                AVVideoYCbCrMatrixKey : AVVideoYCbCrMatrix_ITU_R_601_4
+                ]]
             rgbRecorder = RGBRecorder(videoSettings: rgbVideoSettings)
             depthRecorder = DepthRecorder(videoSettings: depthVideoSetting)
            // confidenceRecorder = ConfidenceRecorder(videoSettings: videoSettings)
         } else {
             print("AR camera only available for iOS 14.0 or newer.")
             // TODO: do something
+        }
+        switch UserDefaultsData.frames {
+        case 60:
+            devider = 1
+        case 30:
+            devider = 30
+        case 1:
+            devider = 60
+        default:
+            return
         }
     }
     
@@ -241,14 +257,16 @@ class DepthVideoViewController: UIViewController {
         if self.isRecording {
             isRecording = false
             self.stopRecording()
-//            DispatchQueue.main.async {
-                self.localDataManager.saveDataWrapper(endDate: Date().dateInISO8601)
-                self.button.backgroundColor = UIColor.green
-                self.button.setTitle("Tap to start recording", for: .normal)
+            //            DispatchQueue.main.async {
+            self.localDataManager.saveDataWrapper(endDate: Date().dateInISO8601)
+            self.cycles = 0
+            self.button.backgroundColor = UIColor.green
+            self.button.setTitle("Tap to start recording", for: .normal)
                 
 //            }
         } else {
 //            DispatchQueue.main.async {
+            self.cycles = 0
                 self.localDataManager.createDataWrapper(startDate: Date().dateInISO8601)
                 self.startRecording(username: "username", sceneDescription: "sceneDescription", sceneType: "sceneType")
                 self.button.backgroundColor = UIColor.red

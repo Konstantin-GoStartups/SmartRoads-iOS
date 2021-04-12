@@ -108,12 +108,12 @@ class LocalDataManager {
         }
     }
     
-    func addDataToObjects(frames: Int, coordinates: [Double], xAcceleration: Double, yAcceleration: Double, zAcceleration: Double, matrix: String, intrinsics: String, projectionMatrix: String, eulerAngle: String, minimumDistance: Float, maximumDistance: Float, defaultPixelData: String, normalisedPicelData: String) {
+    func addDataToObjects(frames: Int, coordinates: [Double], xAcceleration: Double, yAcceleration: Double, zAcceleration: Double, matrix: String, intrinsics: String, projectionMatrix: String, eulerAngle: String, minimumDistance: Float, maximumDistance: Float, defaultPixelData: String, normalisedPicelData: String, clampedPixelData: String, finalPixelData: String) {
         realmQueue.async { [self] in
             autoreleasepool {
                 let rm = try! Realm(configuration: LocalDataManager.realmConfiguration, queue: realmQueue)
                 try! rm.write {
-                    let sensorData = SensorData(frame: frames, latitude: coordinates.first ?? 0.0, longitude: coordinates.last ?? 0.0, xAcceleration: xAcceleration, yAcceleration: yAcceleration, zAcceleration: yAcceleration, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAngle, minimumDistance: minimumDistance, maximumDistance: maximumDistance, defaultPixelData: defaultPixelData, normalisedPixelData: normalisedPicelData)
+                    let sensorData = SensorData(frame: frames, latitude: coordinates.first ?? 0.0, longitude: coordinates.last ?? 0.0, xAcceleration: xAcceleration, yAcceleration: yAcceleration, zAcceleration: yAcceleration, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAngle, minimumDistance: minimumDistance, maximumDistance: maximumDistance, defaultPixelData: defaultPixelData, normalisedPixelData: normalisedPicelData, clampedPixelData: clampedPixelData, finalPixelData: finalPixelData)
                     sensorData.id = (rm.objects(SensorData.self).max(ofProperty: "id") as Int? ?? 0) + 1
                     rm.add(sensorData, update: .all)
                     self.sensorDataWrapper?.sensorDataList.append(sensorData)
