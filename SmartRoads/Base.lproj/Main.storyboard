@@ -17,9 +17,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c8y-kc-bUZ">
-                                <rect key="frame" x="0.0" y="44" width="414" height="684"/>
-                            </arscnView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="drT-fF-KcX">
+                                <rect key="frame" x="79" y="332.5" width="256" height="192"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="256" id="RMy-fK-PS2"/>
+                                    <constraint firstAttribute="height" constant="192" id="gfX-G4-NOg"/>
+                                </constraints>
+                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="krV-Cl-fpe">
                                 <rect key="frame" x="20" y="736" width="374" height="68"/>
                                 <color key="backgroundColor" systemColor="systemGreenColor"/>
@@ -33,13 +37,9 @@
                                     <action selector="didTapSaveVideo:" destination="aB7-4e-idt" eventType="touchUpInside" id="1mM-Z4-11o"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="drT-fF-KcX">
-                                <rect key="frame" x="79" y="332.5" width="256" height="192"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="256" id="RMy-fK-PS2"/>
-                                    <constraint firstAttribute="height" constant="192" id="gfX-G4-NOg"/>
-                                </constraints>
-                            </imageView>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="c8y-kc-bUZ">
+                                <rect key="frame" x="0.0" y="547" width="414" height="181"/>
+                            </arscnView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wOj-1m-Ujn"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -47,9 +47,9 @@
                             <constraint firstItem="krV-Cl-fpe" firstAttribute="leading" secondItem="wOj-1m-Ujn" secondAttribute="leading" constant="20" id="2g5-my-HHj"/>
                             <constraint firstItem="krV-Cl-fpe" firstAttribute="top" secondItem="c8y-kc-bUZ" secondAttribute="bottom" constant="8" id="CrE-H3-wMm"/>
                             <constraint firstItem="c8y-kc-bUZ" firstAttribute="leading" secondItem="zyo-vx-W6k" secondAttribute="leading" id="Kz1-fs-Jj2"/>
-                            <constraint firstItem="c8y-kc-bUZ" firstAttribute="top" secondItem="wOj-1m-Ujn" secondAttribute="top" id="NXS-ta-r3G"/>
                             <constraint firstItem="drT-fF-KcX" firstAttribute="centerY" secondItem="wOj-1m-Ujn" secondAttribute="centerY" id="dKR-ab-mDU"/>
                             <constraint firstItem="wOj-1m-Ujn" firstAttribute="trailing" secondItem="krV-Cl-fpe" secondAttribute="trailing" constant="20" id="dzQ-bx-Mh4"/>
+                            <constraint firstItem="c8y-kc-bUZ" firstAttribute="top" secondItem="drT-fF-KcX" secondAttribute="bottom" constant="60.5" id="gCJ-q2-P3T"/>
                             <constraint firstItem="krV-Cl-fpe" firstAttribute="bottom" secondItem="wOj-1m-Ujn" secondAttribute="bottom" constant="-9" id="nVv-us-f2i"/>
                             <constraint firstItem="drT-fF-KcX" firstAttribute="centerX" secondItem="wOj-1m-Ujn" secondAttribute="centerX" id="ofg-9X-Lo0"/>
                             <constraint firstAttribute="trailing" secondItem="c8y-kc-bUZ" secondAttribute="trailing" id="x3G-YV-rE5"/>

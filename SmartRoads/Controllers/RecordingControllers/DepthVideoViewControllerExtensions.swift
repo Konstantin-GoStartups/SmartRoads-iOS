@@ -18,6 +18,16 @@ extension DepthVideoViewController: ARSCNViewDelegate {
 }
 
 extension DepthVideoViewController: ARSessionDelegate {
+    
+    func removeAlpha(from inputImage: UIImage) -> UIImage {
+            let format = UIGraphicsImageRendererFormat.init()
+            format.opaque = true //Removes Alpha Channel
+            format.scale = inputImage.scale //Keeps original image scale.
+            let size = inputImage.size
+            return UIGraphicsImageRenderer(size: size, format: format).image { _ in
+                inputImage.draw(in: CGRect(origin: .zero, size: size))
+            }
+        }
         
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
 //        guard let depthData = frame.sceneDepth else {
@@ -27,7 +37,6 @@ extension DepthVideoViewController: ARSessionDelegate {
         guard let depthData = session.currentFrame?.sceneDepth else { return }
         let depthMap: CVPixelBuffer = depthData.depthMap
         let arrayOfPixels = depthMap.normalize()
-       // print(asdasd)
         guard let colorImage: CVPixelBuffer = arView.session.currentFrame?.capturedImage else { return }
         let clampedPixels = depthMap.clamp()
         guard let confidenceMap = depthData.confidenceMap else {
@@ -39,17 +48,20 @@ extension DepthVideoViewController: ARSessionDelegate {
         let defaultDepthPixels = arrayOfPixels.first!.debugDescription
         let normalisedDepthPixels = arrayOfPixels.last!.debugDescription
         let clampedDepthPixels = clampedPixels.debugDescription
+        self.previewView.backgroundColor = .red
+        /// Assuming grayscale pixels contains floats in the range 0...1
         self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))
+        //UIImage(pixelBuffer: depthMap)
+       // self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap).settingAlphaOne(in: CGRect(x: 0, y: 0, width: 256, height: 192)))
         let intrinsics = session.currentFrame?.camera.intrinsics.debugDescription.replacingOccurrences(of: "simd_float3x3(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         let matrix = session.currentFrame?.camera.viewMatrix(for: .landscapeLeft).debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         let projectionMatrix = session.currentFrame?.camera.projectionMatrix.debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         let eulerAnglesMatrix = session.currentFrame?.camera.eulerAngles.debugDescription.replacingOccurrences(of: "SIMD3<Float>", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
+        //self.previewView.image = removeAlpha(from: self.previewView.image!)
         if self.isRecording {
             cycles += 1
         }
-        if self.isRecording && (cycles%devider == 0){
-            let image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))
-            guard let okok = image.buffer() else { return }
+        if self.isRecording && (cycles%devider == 0) {
             let timestamp: CMTime = CMTime(seconds: frame.timestamp, preferredTimescale: 1_000_000_000)
             guard let depthPixelBuffer = self.previewView.image?.buffer() else { return }
             let finalPixels = depthPixelBuffer.finalPixels().debugDescription
@@ -62,7 +74,7 @@ extension DepthVideoViewController: ARSessionDelegate {
             //            } else {
             self.rgbRecorder.update(colorImage, timestamp: timestamp)
             //     }
-            self.depthRecorder.update(okok, timestamp: timestamp)
+            self.depthRecorder.update(depthPixelBuffer, timestamp: timestamp)
             //self.confidenceRecorder.update(confidencePixelBuffer, timestamp: timestamp)
             let coordinates = self.getGpsLocation(locationManager: self.locationManager)
             guard let data = self.motionManager.accelerometerData else { return }
@@ -97,48 +109,6 @@ extension DepthVideoViewController: ARSessionDelegate {
         CVMetalTextureCacheCreate(nil, nil, device, nil, &cache)
         
         return cache
-    }
-    
-    func asdasdasd(imageBuffer: CVPixelBuffer) -> UIImage? {
-
-            // Lock the base address of the pixel buffer
-        CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0));
-
-            // Get the number of bytes per row for the pixel buffer
-            let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
-
-            // Get the number of bytes per row for the pixel buffer
-            let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
-
-            // Get the pixel buffer width and height
-            let width = CVPixelBufferGetWidth(imageBuffer);
-            let height = CVPixelBufferGetHeight(imageBuffer);
-
-            // Create a device-dependent RGB color space
-        let colorSpace = CGColorSpaceCreateDeviceRGB();//CGColorSpaceCreateDeviceCMYK()//CGColorSpaceCreateDeviceGray()//CGColorSpaceCreateDeviceRGB();
-
-            // Create a bitmap graphics context with the sample buffer data
-        let context = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
-        //CGBitmapContextCreate(baseAddress, width, height, 8,bytesPerRow, colorSpace, CGBitmapInfo.byteOrder32Little | CGImageAlphaInfo.premultipliedFirst);
-
-            // Create a Quartz image from the pixel data in the bitmap graphics context
-        let quartzImage = context?.makeImage();
-
-            // Unlock the pixel buffer
-        CVPixelBufferUnlockBaseAddress(imageBuffer,CVPixelBufferLockFlags(rawValue: 0));
-
-            // Free up the context and color space
-            //CGContextRelease(context);
-           // CGColorSpaceRelease(colorSpace);
-
-            // Create an image object from the Quartz image
-        guard let qImage = quartzImage else { return nil }
-        let image = UIImage(cgImage: qImage)
-
-            // Release the Quartz image
-            //CGImageRelease(quartzImage);
-
-            return image
     }
     
     func imageCreation(from texture: MTLTexture) -> UIImage? {
@@ -280,9 +250,7 @@ extension DepthVideoViewController: AVCaptureDepthDataOutputDelegate {
                          didOutput depthData: AVDepthData,
                          timestamp: CMTime,
                          connection: AVCaptureConnection) {
-        guard previewMode != .original else {
-            return
-        }
+        
         
         var convertedDepth: AVDepthData
         
@@ -291,6 +259,10 @@ extension DepthVideoViewController: AVCaptureDepthDataOutputDelegate {
             convertedDepth = depthData.converting(toDepthDataType: depthDataType)
         } else {
             convertedDepth = depthData
+        }
+        self.depthData = convertedDepth
+        guard previewMode != .original else {
+            return
         }
         
         let pixelBuffer = convertedDepth.depthDataMap

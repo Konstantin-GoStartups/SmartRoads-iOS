@@ -9,6 +9,21 @@ import CoreVideo
 import UIKit
 
 extension CVPixelBuffer {
+    func createBuffer(from array: [Float]) {
+        let height = 192
+        let width = 256
+        var pixelBuffer: CVPixelBuffer?
+        let floatBuffer = unsafeBitCast(CVPixelBufferGetBaseAddress(self), to: UnsafeMutablePointer<Float>.self)
+        CVPixelBufferLockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
+        for y in stride(from:0, to: height, by: 1) {
+            for x in stride(from: 0, to: width, by: 1) {
+                var pixel = floatBuffer[y * width + x]
+                pixel = array[y * width + x ]
+                floatBuffer[y * width + x] = pixel
+            }
+        }
+        CVPixelBufferUnlockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
+    }
     func finalPixels() -> [Float] {
         let width = CVPixelBufferGetWidth(self)
         let height = CVPixelBufferGetHeight(self)

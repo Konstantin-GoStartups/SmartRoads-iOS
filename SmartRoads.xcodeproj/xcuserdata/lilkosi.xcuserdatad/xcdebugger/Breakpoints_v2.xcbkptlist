@@ -19,15 +19,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1D4A8D55-CFED-4288-8372-9B412F42ABB9"
+            uuid = "B6CC3DBE-7C32-411B-B980-1694DB38D7E2"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SmartRoads/Controllers/RecordingControllers/DepthVideoViewControllerExtensions.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "302"
-            endingLineNumber = "302"
+            startingLineNumber = "257"
+            endingLineNumber = "257"
             landmarkName = "depthDataOutput(_:didOutput:timestamp:connection:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -35,16 +35,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "508D1E8E-E6F2-4F62-94C8-3D8B53B80984"
+            uuid = "FE4A576B-F8CE-4CD0-A655-9E87930A4678"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SmartRoads/Controllers/RecordingControllers/DepthVideoViewControllerExtensions.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283"
+            startingLineNumber = "255"
+            endingLineNumber = "255"
             landmarkName = "depthDataOutput(_:didOutput:timestamp:connection:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7F2BC0BD-3D9C-4B66-910C-33A378453E68"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "SmartRoadsTests/SmartRoadsTests.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "88"
+            endingLineNumber = "88"
+            landmarkName = "testExample()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

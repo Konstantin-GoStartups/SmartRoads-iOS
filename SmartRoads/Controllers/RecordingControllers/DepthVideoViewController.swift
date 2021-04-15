@@ -80,7 +80,7 @@ class DepthVideoViewController: UIViewController {
     lazy var rotateToARCamera = makeRotateToARCameraMatrix(orientation: orientation)
     var devider = 0
     var cycles = 0
-    
+    var depthData: AVDepthData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -101,6 +101,7 @@ class DepthVideoViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: ProcessInfo.thermalStateDidChangeNotification, object: nil)
         arSession.pause()
         arView.session.pause()
+        session.stopRunning()
     }
     
     func motionManagement() {
@@ -123,6 +124,7 @@ class DepthVideoViewController: UIViewController {
         //arSession.delegate = self
         arView.delegate = self
         arView.session.delegate = self
+        session.startRunning()
         let configuration = ARWorldTrackingConfiguration()
         configuration.frameSemantics = .sceneDepth
         //configuration.sceneReconstruction = .meshWithClassification

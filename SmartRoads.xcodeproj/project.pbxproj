@@ -50,6 +50,9 @@
 		E5D1B49C2623727300D471EA /* CheckBoxControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D1B49B2623727300D471EA /* CheckBoxControl.swift */; };
 		E5D1B49F2623737A00D471EA /* WiFiUploadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D1B49E2623737A00D471EA /* WiFiUploadTableViewCell.swift */; };
 		E5D1B4A2262373A200D471EA /* CellularUploadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D1B4A1262373A200D471EA /* CellularUploadTableViewCell.swift */; };
+		E5D4756B2625CD56002D9641 /* SmartRoadsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D4756A2625CD56002D9641 /* SmartRoadsTests.swift */; };
+		E5D475B02625D293002D9641 /* 3fps.json in Resources */ = {isa = PBXBuildFile; fileRef = E5D475AF2625D293002D9641 /* 3fps.json */; };
+		E5D475B42625F488002D9641 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5D475B32625F488002D9641 /* StringExtensions.swift */; };
 		E5F21A93261B4A400073ACB5 /* FloatExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F21A92261B4A400073ACB5 /* FloatExtensions.swift */; };
 		E5F59D482611C4C700C91F75 /* SensorData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59D472611C4C700C91F75 /* SensorData.swift */; };
 		E5F59D4B2611C52200C91F75 /* SensorDataWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59D4A2611C52200C91F75 /* SensorDataWrapper.swift */; };
@@ -60,6 +63,16 @@
 		E5F59DA826121A9000C91F75 /* UIApllicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5F59DA726121A9000C91F75 /* UIApllicationExtensions.swift */; };
 		E5FC1E3C2624AFFA005FD71B /* UserDefaultsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5FC1E3B2624AFFA005FD71B /* UserDefaultsData.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E5D4756D2625CD56002D9641 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E595CAA5260CC96500BE5F6C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E595CAAC260CC96500BE5F6C;
+			remoteInfo = SmartRoads;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		E5078C3226170FA600D84FB5 /* ConfidenceRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidenceRecorder.swift; sourceTree = "<group>"; };
@@ -105,6 +118,11 @@
 		E5D1B49B2623727300D471EA /* CheckBoxControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckBoxControl.swift; sourceTree = "<group>"; };
 		E5D1B49E2623737A00D471EA /* WiFiUploadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WiFiUploadTableViewCell.swift; sourceTree = "<group>"; };
 		E5D1B4A1262373A200D471EA /* CellularUploadTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellularUploadTableViewCell.swift; sourceTree = "<group>"; };
+		E5D475682625CD56002D9641 /* SmartRoadsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SmartRoadsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E5D4756A2625CD56002D9641 /* SmartRoadsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRoadsTests.swift; sourceTree = "<group>"; };
+		E5D4756C2625CD56002D9641 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E5D475AF2625D293002D9641 /* 3fps.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = 3fps.json; sourceTree = "<group>"; };
+		E5D475B32625F488002D9641 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		E5F21A92261B4A400073ACB5 /* FloatExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatExtensions.swift; sourceTree = "<group>"; };
 		E5F59D472611C4C700C91F75 /* SensorData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorData.swift; sourceTree = "<group>"; };
 		E5F59D4A2611C52200C91F75 /* SensorDataWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorDataWrapper.swift; sourceTree = "<group>"; };
@@ -123,6 +141,13 @@
 			files = (
 				E595CAEF260CDA8B00BE5F6C /* RealmSwift in Frameworks */,
 				E595CAED260CDA8B00BE5F6C /* Realm in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5D475652625CD56002D9641 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +189,7 @@
 			isa = PBXGroup;
 			children = (
 				E595CAAF260CC96500BE5F6C /* SmartRoads */,
+				E5D475692625CD56002D9641 /* SmartRoadsTests */,
 				E595CAAE260CC96500BE5F6C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -172,6 +198,7 @@
 			isa = PBXGroup;
 			children = (
 				E595CAAD260CC96500BE5F6C /* SmartRoads.app */,
+				E5D475682625CD56002D9641 /* SmartRoadsTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -244,6 +271,7 @@
 				E5F21A92261B4A400073ACB5 /* FloatExtensions.swift */,
 				E508C7CA261E231A005D8EC8 /* DoubleExtensions.swift */,
 				E5503C2F26237A6A00AFEA98 /* UIViewExtensions.swift */,
+				E5D475B32625F488002D9641 /* StringExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -290,6 +318,16 @@
 			path = VideoDetailControllers;
 			sourceTree = "<group>";
 		};
+		E5D475692625CD56002D9641 /* SmartRoadsTests */ = {
+			isa = PBXGroup;
+			children = (
+				E5D4756A2625CD56002D9641 /* SmartRoadsTests.swift */,
+				E5D475AF2625D293002D9641 /* 3fps.json */,
+				E5D4756C2625CD56002D9641 /* Info.plist */,
+			);
+			path = SmartRoadsTests;
+			sourceTree = "<group>";
+		};
 		E5F59D622611C7D800C91F75 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -323,6 +361,24 @@
 			productReference = E595CAAD260CC96500BE5F6C /* SmartRoads.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E5D475672625CD56002D9641 /* SmartRoadsTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E5D475712625CD56002D9641 /* Build configuration list for PBXNativeTarget "SmartRoadsTests" */;
+			buildPhases = (
+				E5D475642625CD56002D9641 /* Sources */,
+				E5D475652625CD56002D9641 /* Frameworks */,
+				E5D475662625CD56002D9641 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E5D4756E2625CD56002D9641 /* PBXTargetDependency */,
+			);
+			name = SmartRoadsTests;
+			productName = SmartRoadsTests;
+			productReference = E5D475682625CD56002D9641 /* SmartRoadsTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -334,6 +390,10 @@
 				TargetAttributes = {
 					E595CAAC260CC96500BE5F6C = {
 						CreatedOnToolsVersion = 12.4;
+					};
+					E5D475672625CD56002D9641 = {
+						CreatedOnToolsVersion = 12.4;
+						TestTargetID = E595CAAC260CC96500BE5F6C;
 					};
 				};
 			};
@@ -354,6 +414,7 @@
 			projectRoot = "";
 			targets = (
 				E595CAAC260CC96500BE5F6C /* SmartRoads */,
+				E5D475672625CD56002D9641 /* SmartRoadsTests */,
 			);
 		};
 /* End PBXProject section */
@@ -366,6 +427,14 @@
 				E595CABD260CC96700BE5F6C /* LaunchScreen.storyboard in Resources */,
 				E595CABA260CC96700BE5F6C /* Assets.xcassets in Resources */,
 				E595CAB8260CC96500BE5F6C /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E5D475662625CD56002D9641 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D475B02625D293002D9641 /* 3fps.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -400,6 +469,7 @@
 				E5D1B4902623585200D471EA /* DeveloperModeViewController.swift in Sources */,
 				E57362072615CD470060C471 /* LoginViewController.swift in Sources */,
 				E5D1B49C2623727300D471EA /* CheckBoxControl.swift in Sources */,
+				E5D475B42625F488002D9641 /* StringExtensions.swift in Sources */,
 				E5503C3026237A6A00AFEA98 /* UIViewExtensions.swift in Sources */,
 				E5D1B49626235E5B00D471EA /* DimensionalArray.swift in Sources */,
 				E56A2BE0261610FB00DF9F58 /* Helper.swift in Sources */,
@@ -426,7 +496,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E5D475642625CD56002D9641 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E5D4756B2625CD56002D9641 /* SmartRoadsTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E5D4756E2625CD56002D9641 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E595CAAC260CC96500BE5F6C /* SmartRoads */;
+			targetProxy = E5D4756D2625CD56002D9641 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		E595CAB6260CC96500BE5F6C /* Main.storyboard */ = {
@@ -608,6 +694,46 @@
 			};
 			name = Release;
 		};
+		E5D4756F2625CD56002D9641 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P6Y2W9RQ54;
+				INFOPLIST_FILE = SmartRoadsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.KonstantinKostadinov.SmartRoadsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartRoads.app/SmartRoads";
+			};
+			name = Debug;
+		};
+		E5D475702625CD56002D9641 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = P6Y2W9RQ54;
+				INFOPLIST_FILE = SmartRoadsTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.KonstantinKostadinov.SmartRoadsTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SmartRoads.app/SmartRoads";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -625,6 +751,15 @@
 			buildConfigurations = (
 				E595CAC2260CC96700BE5F6C /* Debug */,
 				E595CAC3260CC96700BE5F6C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E5D475712625CD56002D9641 /* Build configuration list for PBXNativeTarget "SmartRoadsTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E5D4756F2625CD56002D9641 /* Debug */,
+				E5D475702625CD56002D9641 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

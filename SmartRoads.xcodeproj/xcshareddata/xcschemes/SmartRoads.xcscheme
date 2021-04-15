@@ -35,6 +35,16 @@
          </EnvironmentVariable>
       </EnvironmentVariables>
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E5D475672625CD56002D9641"
+               BuildableName = "SmartRoadsTests.xctest"
+               BlueprintName = "SmartRoadsTests"
+               ReferencedContainer = "container:SmartRoads.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
