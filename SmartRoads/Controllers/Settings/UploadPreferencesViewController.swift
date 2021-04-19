@@ -58,7 +58,7 @@ extension UploadPreferencesViewController: UITableViewDelegate, UITableViewDataS
             return cell
         default:
             let cell = tableView.dequeueReusableCell(withIdentifier: Constants.cellularCellIdentifier, for: indexPath) as! CellularUploadTableViewCell
-            cell.cellularLabel.text = row == 3 ? "4G" : "5G"
+            cell.cellularLabel.text = row == 2 ? "4G" : "5G"
             cell.checkBox.style = .tick
             cell.checkBox.backgroundColor = .lightGray
             return cell

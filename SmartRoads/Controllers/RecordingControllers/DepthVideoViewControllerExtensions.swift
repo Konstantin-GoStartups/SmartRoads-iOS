@@ -19,15 +19,31 @@ extension DepthVideoViewController: ARSCNViewDelegate {
 
 extension DepthVideoViewController: ARSessionDelegate {
     
-    func removeAlpha(from inputImage: UIImage) -> UIImage {
-            let format = UIGraphicsImageRendererFormat.init()
-            format.opaque = true //Removes Alpha Channel
-            format.scale = inputImage.scale //Keeps original image scale.
-            let size = inputImage.size
-            return UIGraphicsImageRenderer(size: size, format: format).image { _ in
-                inputImage.draw(in: CGRect(origin: .zero, size: size))
-            }
+    func mask(from data: [Float]) -> UIImage? {
+        guard data.count >= 8 else {
+            print("data too small")
+            return nil
         }
+
+        let width  = Int(data[1]) | Int(data[0]) << 8
+        let height = Int(data[3]) | Int(data[2]) << 8
+
+        let colorSpace = CGColorSpaceCreateDeviceGray()
+
+        guard
+            data.count >= width * height + 8,
+            let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width, space: colorSpace, bitmapInfo: CGImageAlphaInfo.alphaOnly.rawValue),
+            let buffer = context.data?.bindMemory(to: Float.self, capacity: width * height)
+        else {
+            return nil
+        }
+
+        for index in 0 ..< width * height {
+            buffer[index] = data[index + 8]
+        }
+
+        return context.makeImage().flatMap { UIImage(cgImage: $0) }
+    }
         
     func session(_ session: ARSession, didUpdate frame: ARFrame) {
 //        guard let depthData = frame.sceneDepth else {
@@ -36,35 +52,51 @@ extension DepthVideoViewController: ARSessionDelegate {
 
         guard let depthData = session.currentFrame?.sceneDepth else { return }
         let depthMap: CVPixelBuffer = depthData.depthMap
-        let arrayOfPixels = depthMap.normalize()
-        guard let colorImage: CVPixelBuffer = arView.session.currentFrame?.capturedImage else { return }
+        //let arrayOfPixels = depthMap.normalize()
+        depthMap.normalizeWithoutData()
+        guard let colorImage: CVPixelBuffer = session.currentFrame?.capturedImage else { return }
         let clampedPixels = depthMap.clamp()
+        depthMap.normalizeWithoutData()
         guard let confidenceMap = depthData.confidenceMap else {
             print("Failed to get confidenceMap.")
             return
         }
         lastDepthMap = depthMap
 
-        let defaultDepthPixels = arrayOfPixels.first!.debugDescription
-        let normalisedDepthPixels = arrayOfPixels.last!.debugDescription
-        let clampedDepthPixels = clampedPixels.debugDescription
-        self.previewView.backgroundColor = .red
+        let defaultDepthPixels = ""//arrayOfPixels.first!.debugDescription
+        let normalisedDepthPixels = ""//arrayOfPixels.last!.debugDescription
+        let clampedDepthPixels = ""//clampedPixels.debugDescription
+        //self.previewView.backgroundColor = .red
         /// Assuming grayscale pixels contains floats in the range 0...1
-        self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))
+
+        switch UIDevice.current.orientation {
+        case .landscapeLeft:
+            self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap))//.oriented(.left))
+            self.rgbImageView.image = UIImage(ciImage: CIImage(cvPixelBuffer: colorImage))//.oriented())
+        case .portrait:
+            self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap).oriented(.right))
+            self.rgbImageView.image = UIImage(ciImage: CIImage(cvPixelBuffer: colorImage).oriented(.right))
+        case .landscapeRight:
+            self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap).oriented(.right).oriented(.right))
+            self.rgbImageView.image = UIImage(ciImage: CIImage(cvPixelBuffer: colorImage).oriented(.right).oriented(.right))
+        default:
+            return
+        }
         //UIImage(pixelBuffer: depthMap)
        // self.previewView.image = UIImage(ciImage: CIImage(cvPixelBuffer: depthMap).settingAlphaOne(in: CGRect(x: 0, y: 0, width: 256, height: 192)))
-        let intrinsics = session.currentFrame?.camera.intrinsics.debugDescription.replacingOccurrences(of: "simd_float3x3(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
-        let matrix = session.currentFrame?.camera.viewMatrix(for: .landscapeLeft).debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
-        let projectionMatrix = session.currentFrame?.camera.projectionMatrix.debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
-        let eulerAnglesMatrix = session.currentFrame?.camera.eulerAngles.debugDescription.replacingOccurrences(of: "SIMD3<Float>", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
+        let intrinsics = ""//session.currentFrame?.camera.intrinsics.debugDescription.replacingOccurrences(of: "simd_float3x3(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
+        let matrix = ""//session.currentFrame?.camera.viewMatrix(for: .landscapeLeft).debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
+        let projectionMatrix = ""//session.currentFrame?.camera.projectionMatrix.debugDescription.replacingOccurrences(of: "simd_float4x4(", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
+        let eulerAnglesMatrix = ""//session.currentFrame?.camera.eulerAngles.debugDescription.replacingOccurrences(of: "SIMD3<Float>", with: "").replacingOccurrences(of: ")", with: "") ?? "error"
         //self.previewView.image = removeAlpha(from: self.previewView.image!)
         if self.isRecording {
             cycles += 1
         }
-        if self.isRecording && (cycles%devider == 0) {
+        if self.isRecording /*&& (cycles%devider == 0) */{
             let timestamp: CMTime = CMTime(seconds: frame.timestamp, preferredTimescale: 1_000_000_000)
             guard let depthPixelBuffer = self.previewView.image?.buffer() else { return }
-            let finalPixels = depthPixelBuffer.finalPixels().debugDescription
+            guard let colorPixelBuffer = self.rgbImageView.image?.buffer() else { return }
+            let finalPixels = ""//depthPixelBuffer.finalPixels().debugDescription
             //            if let image =  UIImage(ciImage: CIImage(cvImageBuffer: colorImage)).rotate(radians: .pi/2) {
             //                if let rgbPixelBuffer = image.buffer() {
             //                    self.rgbRecorder.update(rgbPixelBuffer, timestamp: timestamp)
@@ -72,7 +104,7 @@ extension DepthVideoViewController: ARSessionDelegate {
             //                    self.rgbRecorder.update(colorImage, timestamp: timestamp)
             //                }
             //            } else {
-            self.rgbRecorder.update(colorImage, timestamp: timestamp)
+           // self.rgbRecorder.update(colorPixelBuffer, timestamp: timestamp)
             //     }
             self.depthRecorder.update(depthPixelBuffer, timestamp: timestamp)
             //self.confidenceRecorder.update(confidencePixelBuffer, timestamp: timestamp)
@@ -81,7 +113,7 @@ extension DepthVideoViewController: ARSessionDelegate {
             let x = data.acceleration.x
             let y = data.acceleration.y
             let z = data.acceleration.z
-            self.localDataManager.addDataToObjects(frames: self.numFrames, coordinates: coordinates, xAcceleration: x, yAcceleration: y, zAcceleration: z, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAnglesMatrix, minimumDistance: arrayOfPixels.first?.min() ?? 0.0, maximumDistance: arrayOfPixels.first?.max() ?? 0.0, defaultPixelData: defaultDepthPixels, normalisedPicelData: normalisedDepthPixels, clampedPixelData: clampedDepthPixels, finalPixelData: finalPixels)
+            self.localDataManager.addDataToObjects(frames: self.numFrames, coordinates: coordinates, xAcceleration: x, yAcceleration: y, zAcceleration: z, matrix: matrix, intrinsics: intrinsics, projectionMatrix: projectionMatrix, eulerAngle: eulerAnglesMatrix, minimumDistance: /*arrayOfPixels.first?.min() ?? */0.0, maximumDistance: /*arrayOfPixels.first?.max() ??*/ 0.0, defaultPixelData: defaultDepthPixels, normalisedPicelData: normalisedDepthPixels, clampedPixelData: clampedDepthPixels, finalPixelData: finalPixels)
             self.numFrames += 1
         }
     }
@@ -393,7 +425,7 @@ extension DepthVideoViewController: RecordingManager {
                 let confidenceOutputFilePath = (dirUrl.path as NSString).appendingPathComponent(("CONFIDENCE-\(recordingId)" as NSString).appendingPathExtension("mp4")!)
     //            let rgbOutputFilePath = "Documents/\(recordingId)/RGB-\(recordingId).mp4"
     //            let depthOutputFilePath = "Documents/\(recordingId)/DEPTH-\(recordingId).mp4"
-                rgbRecorder.prepareForRecording(dirPath: dirUrl.path, filename: "RGB-\(recordingId)")
+               // rgbRecorder.prepareForRecording(dirPath: dirUrl.path, filename: "RGB-\(recordingId)")
                 depthRecorder.prepareForRecording(dirPath: dirUrl.path, filename: "DEPTH-\(recordingId)")
                 //confidenceRecorder.prepareForRecording(dirPath: dirUrl.path, filename: "CONFIDENCE-\(recordingId)")
                 isRecording = true

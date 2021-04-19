@@ -22,7 +22,7 @@ class SmartRoadsTests: XCTestCase {
     func testExample() throws {
         var sensorDataWrapperJson  = SensorDataWrapper()
         var sensorDatajsonFrameOne = SensorData()
-        guard let pathString = Bundle(for: type(of: self)).path(forResource: "3fps", ofType: "json") else {
+        guard let pathString = Bundle(for: type(of: self)).path(forResource: "3", ofType: "json") else {
             fatalError("RecordedExercise.json not found")
         }
         do {
@@ -78,19 +78,48 @@ class SmartRoadsTests: XCTestCase {
             }
             print("RAZMERI", floatClampedData.count, floatFinalData.count)
             for i in 0..<floatClampedData.count {
-                var pixel = floatClampedData[i]
+                var pixel = floatFinalData[i]
                 pixel *= 255
-                print(floatClampedData[i], pixel,floatFinalData[i])//, floatFinalData[i])
+                pixel *= 8
+                pixel *= 8
+                pixel *= 8
+                print(floatClampedData[i],floatFinalData[i],pixel)//, floatFinalData[i])
             }
+            let image = UIImage()
+            let imag2 = UIImage()
             
+            guard let clampedDataBuffer = image.buffer()!.createBuffer(from: floatClampedData) else { return }
+            guard let finalDataBuffer = imag2.buffer()!.createBuffer(from: floatFinalData) else { return }
             
+             let clampedImage = UIImage(ciImage: CIImage(cvPixelBuffer: clampedDataBuffer))
+             let finalImage = UIImage(ciImage: CIImage(cvPixelBuffer: finalDataBuffer))
             
-            let comparisonPixel = finalPixelArray.first
-           // //let firstPixel = clampedPixelArray.first
-           // print(firstPixel, comparisonPixel)
+            let clampedSubsc = clampedImage.subscriptColor(x: 0, y: 0)
+            let finalSubsc = finalImage.subscriptColor(x: 0, y: 0)
+            
+            print(clampedSubsc?.rgba, finalSubsc?.rgba)
+            
+            //python3 test_depth_maps.py --depth test_data/2021_04_13_rgb+depth/DEPTH-2021_04_13-02_59-bulevard-Simeonovsko-shose-Sofia.mp4 --json test_data/2021_04_13_rgb+depth/JSON-2021_04_13-02_59-bulevard-Simeonovsko-shose-Sofia.json --frame_num 0
             
         }
     }
+    
+//    func createBuffer(from array: [Float]) -> CVPixelBuffer? {
+//        let height = 192
+//        let width = 256
+//        var pixelBuffer: CVPixelBuffer?
+//        let floatBuffer = unsafeBitCast(CVPixelBufferGetBaseAddress(self), to: UnsafeMutablePointer<Float>.self)
+//        CVPixelBufferLockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
+//        for y in stride(from:0, to: height, by: 1) {
+//            for x in stride(from: 0, to: width, by: 1) {
+//                var pixel = floatBuffer[y * width + x]
+//                pixel = array[y * width + x ]
+//                floatBuffer[y * width + x] = pixel
+//            }
+//        }
+//        CVPixelBufferUnlockBaseAddress(self, CVPixelBufferLockFlags(rawValue: 0))
+//        return pixelBuffer
+//    }
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.

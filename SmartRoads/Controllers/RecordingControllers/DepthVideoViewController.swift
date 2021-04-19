@@ -27,7 +27,17 @@ class DepthVideoViewController: UIViewController {
     @IBOutlet weak var previewView: UIImageView!
     @IBOutlet weak var button: UIButton!
     @IBOutlet weak var confidenceView: UIImageView!
+    @IBOutlet weak var rgbImageView: UIImageView!
     @IBOutlet weak var arView: ARSCNView!
+    @IBOutlet weak var sensorIndicationView: UIView!
+    @IBOutlet weak var spaceLeftLabel: UILabel!
+    @IBOutlet weak var gpsLabel: UILabel!
+    @IBOutlet weak var gpsIndicatorView: UIView!
+    @IBOutlet weak var temperatureLabel: UILabel!
+    @IBOutlet weak var temperatureIndicatorView: UIView!
+    @IBOutlet weak var lidarLabel: UILabel!
+    @IBOutlet weak var lidarIndicatorView: UIView!
+    @IBOutlet weak var warningImageView: UIImageView!
     
     lazy var textureCache = makeTextureCache()
     var arreyData = [DataMove]()
@@ -84,8 +94,29 @@ class DepthVideoViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.temperatureIndicatorView.backgroundColor = .green
         //motionManagement()
+        //self.tabBarController?.preferredInterfaceOrientationForPresentation = UIDeviceOrientation.landscapeLeft
+        //self.rotateToLandscapeLeft()
+
     }
+    
+//    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.landscapeLeft
+//
+//    }
+//    func navigationControllerSupportedInterfaceOrientations(navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+//        return UIInterfaceOrientationMask.landscapeLeft
+//    }
+//
+//
+//
+//    override var shouldAutorotate: Bool {
+//        return false
+//    }
+//    override var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+//        return .landscapeLeft
+//    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -100,7 +131,7 @@ class DepthVideoViewController: UIViewController {
         super.viewWillDisappear(animated)
         NotificationCenter.default.removeObserver(self, name: ProcessInfo.thermalStateDidChangeNotification, object: nil)
         arSession.pause()
-        arView.session.pause()
+        //arView.session.pause()
         session.stopRunning()
     }
     
@@ -121,36 +152,47 @@ class DepthVideoViewController: UIViewController {
     }
     
     func setupARSession() {
-        //arSession.delegate = self
-        arView.delegate = self
-        arView.session.delegate = self
-        session.startRunning()
-        let configuration = ARWorldTrackingConfiguration()
-        configuration.frameSemantics = .sceneDepth
-        //configuration.sceneReconstruction = .meshWithClassification
-        //configuration.environmentTexturing = .automatic
-        configuration.wantsHDREnvironmentTextures = true
-
-       // arSession.run(configuration)
-       // arView.session = arSession
-        arView.session.run(configuration)
         if #available(iOS 14.0, *) {
+            arSession.delegate = self
+            session.startRunning()
+            let configuration = ARWorldTrackingConfiguration()
+            configuration.wantsHDREnvironmentTextures = true
+            if type(of: configuration).supportsFrameSemantics(.sceneDepth) {
+                configuration.frameSemantics = .sceneDepth
+            } else {
+                self.lidarIndicatorView.backgroundColor = .red
+                let alertController = UIAlertController(title: "No LiDAR sensor", message: "This version of iPhone/iPad does not have LiDAR sensor", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+                self.present(alertController, animated: true, completion: nil)
+            }
+            arSession.run(configuration)
             let videoFormat = configuration.videoFormat
             frequency = videoFormat.framesPerSecond
             let imageResolution = videoFormat.imageResolution
             colorFrameResolution = [Int(imageResolution.height), Int(imageResolution.width)]
             print(colorFrameResolution, frequency)
-            let rgbVideoSettings: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.jpeg, AVVideoHeightKey: NSNumber(value: colorFrameResolution[0]), AVVideoWidthKey: NSNumber(value: colorFrameResolution[1])]
-            let depthVideoSetting: [String: Any] = [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoHeightKey: 192, AVVideoWidthKey: 256,AVVideoColorPropertiesKey : [
-                AVVideoColorPrimariesKey : AVVideoColorPrimaries_ITU_R_709_2,
-                AVVideoTransferFunctionKey : AVVideoTransferFunction_ITU_R_709_2,
-                AVVideoYCbCrMatrixKey : AVVideoYCbCrMatrix_ITU_R_601_4
-                ]]
+            var rgbVideoSettings: [String: Any] = [String:Any]()
+            var depthVideoSetting: [String: Any] = [String:Any]()
+            switch UIDevice.current.orientation {
+            case .portrait:
+                rgbVideoSettings = [AVVideoCodecKey: AVVideoCodecType.jpeg, AVVideoHeightKey: NSNumber(value: colorFrameResolution[1]), AVVideoWidthKey: NSNumber(value: colorFrameResolution[0])]
+                depthVideoSetting = [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoHeightKey: 256, AVVideoWidthKey: 192]
+            case .landscapeLeft, .landscapeRight:
+                rgbVideoSettings = [AVVideoCodecKey: AVVideoCodecType.jpeg, AVVideoHeightKey: NSNumber(value: colorFrameResolution[0]), AVVideoWidthKey: NSNumber(value: colorFrameResolution[1])]
+                depthVideoSetting = [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoHeightKey: 192, AVVideoWidthKey: 256]
+            default:
+                return
+            }
             rgbRecorder = RGBRecorder(videoSettings: rgbVideoSettings)
             depthRecorder = DepthRecorder(videoSettings: depthVideoSetting)
+            self.lidarIndicatorView.backgroundColor = .green
            // confidenceRecorder = ConfidenceRecorder(videoSettings: videoSettings)
         } else {
             print("AR camera only available for iOS 14.0 or newer.")
+            self.lidarIndicatorView.backgroundColor = .red
+            let alertController = UIAlertController(title: "Lower iOS version then 14.0", message: "This version of iOS/iPadOS does not support the ARKit", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Alert OK button"), style: .cancel, handler: nil))
+            self.present(alertController, animated: true, completion: nil)
             // TODO: do something
         }
         switch UserDefaultsData.frames {
@@ -174,14 +216,19 @@ class DepthVideoViewController: UIViewController {
     func showThermalState(state: ProcessInfo.ThermalState) {
         DispatchQueue.main.async {
             var thermalStateString = "UNKNOWN"
+            self.temperatureIndicatorView.backgroundColor = .gray
             if state == .nominal {
                 thermalStateString = "NOMINAL"
+                self.temperatureIndicatorView.backgroundColor = .green
             } else if state == .fair {
                 thermalStateString = "FAIR"
+                self.temperatureIndicatorView.backgroundColor = .yellow
             } else if state == .serious {
                 thermalStateString = "SERIOUS"
+                self.temperatureIndicatorView.backgroundColor = .red
             } else if state == .critical {
                 thermalStateString = "CRITICAL"
+                self.temperatureIndicatorView.backgroundColor = .black
             }
             
             let message = NSLocalizedString("Thermal state: \(thermalStateString)", comment: "Alert message when thermal state has changed")
@@ -207,9 +254,13 @@ class DepthVideoViewController: UIViewController {
             locationManager.authorizationStatus == .authorizedAlways) {
             if let coordinate = locationManager.location?.coordinate {
                 gpsLocation = [coordinate.latitude, coordinate.longitude]
+                self.gpsIndicatorView.backgroundColor = .green
             }
         } else if locationManager.authorizationStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
+            self.gpsIndicatorView.backgroundColor = .yellow
+        } else if locationManager.authorizationStatus == .denied || locationManager.authorizationStatus == .restricted {
+            self.gpsIndicatorView.backgroundColor = .red
         }
         
         return gpsLocation

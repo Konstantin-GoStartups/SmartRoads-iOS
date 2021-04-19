@@ -17,7 +17,98 @@ extension CIImage{
     }
 }
 
+
+public func avarage<S: Collection>(
+    _ sequence: S)
+    -> S.Element where S.Element: FixedWidthInteger {
+        return sequence.reduce(0, +) / S.Element(sequence.count)
+}
+ 
+extension UInt16 {
+    var uint8: UInt8 {
+        return UInt8(self)
+    }
+}
+ 
+extension UInt8 {
+    var uint16: UInt16 {
+        return UInt16(self)
+    }
+}
+
+
 extension UIImage {
+    
+    func subscriptColor (x: Int, y: Int) -> UIColor? {
+        
+        if x < 0 || x > Int(size.width) || y < 0 || y > Int(size.height) {
+            return nil
+        }
+        
+        let provider = self.cgImage!.dataProvider
+        let providerData = provider!.data
+        let data = CFDataGetBytePtr(providerData)
+        
+        let numberOfComponents = 4
+        let pixelData = ((Int(size.width) * y) + x) * numberOfComponents
+        
+        let r = CGFloat(data![pixelData]) / 255.0
+        let g = CGFloat(data![pixelData + 1]) / 255.0
+        let b = CGFloat(data![pixelData + 2]) / 255.0
+        let a = CGFloat(data![pixelData + 3]) / 255.0
+        
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
+    
+    func graySacled() -> UIImage? {
+            
+            guard
+                let cgImage = cgImage,
+                let data = cgImage.dataProvider?.data as Data? else {
+                    return nil
+            }
+            
+            let width = cgImage.width
+            let height = cgImage.height
+            let channels = 4
+            let size = data.count / channels
+            
+            let buffer = UnsafeMutablePointer<CUnsignedChar>.allocate(capacity: size)
+            defer { free(buffer) }
+     
+            stride(from: 0, to: data.count, by: channels).forEach {
+                /// Here the gray uses the simplest algorithm `G = (R + G + B) / 3`
+                buffer.advanced(by: $0 / channels).pointee = avarage(($0..<$0 + 3).map { data[$0].uint16 }).uint8
+            }
+                     /// =================== buffer is already `single channel ``gray`, the following is a composite image ============= ======
+            
+            let releaseData: CGDataProviderReleaseDataCallback = {
+                (info, buffer, length) in
+            }
+            
+            return CGDataProvider(
+                    dataInfo: nil,
+                    data: buffer,
+                    size: size,
+                    releaseData: releaseData)
+                .flatMap {
+                    CGImage(
+                    width: width,
+                    height: height,
+                    bitsPerComponent: 8,
+                    bitsPerPixel: 8,
+                    bytesPerRow: width,
+                    space: CGColorSpaceCreateDeviceGray(),
+                    bitmapInfo: CGBitmapInfo(rawValue: 0),
+                    provider: $0,
+                    decode: nil,
+                    shouldInterpolate: true,
+                    intent: .defaultIntent)
+                }
+                .flatMap(UIImage.init)
+     
+        }
+
     
     public convenience init?(pixelBuffer: CVPixelBuffer) {
         var cgImage: CGImage?

@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSMotionUsageDescription</key>
-	<string>SMartRoads app uses motion</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -28,6 +26,8 @@
 	<string>SmartRoads app uses location always</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>SmartRoads app uses location when in use</string>
+	<key>NSMotionUsageDescription</key>
+	<string>SMartRoads app uses motion</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>We need your permission to be able to add videos.</string>
 	<key>UIApplicationSceneManifest</key>

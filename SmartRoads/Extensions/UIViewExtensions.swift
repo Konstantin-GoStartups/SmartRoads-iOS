@@ -17,4 +17,15 @@ extension UIView {
             layer.borderWidth = newValue
         }
     }
+    
+    @IBInspectable
+    var radius: CGFloat {
+        get {
+            return layer.cornerRadius
+        }
+        set {
+            layer.cornerRadius = newValue
+            layer.masksToBounds = newValue > 0
+        }
+    }
 }
