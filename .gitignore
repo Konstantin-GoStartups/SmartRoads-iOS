@@ -27,6 +27,8 @@ build/
 
 # Generic
 *.DS_Store
+*.json
+SmartRoadsTests/*.json
 
 # Automatic backup files
 *~.nib/
